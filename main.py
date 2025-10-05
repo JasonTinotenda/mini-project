@@ -1,20 +1,5 @@
-"""
-main.py
-
-Simple tkinter GUI for the Course Recommender System.
-
-Provides:
-- Program selection (Combobox)
-- Level selection (Combobox)
-- Button to load recommended courses
-- Text area to display the list of courses for the selected program and level
-
-"""
-
 import tkinter as tk
 from tkinter import ttk, messagebox
-import json
-import sys
 
 try:
     from courses_data import COURSES
@@ -23,38 +8,24 @@ except Exception:
 
 
 def get_program_list():
-    """Return sorted list of available program names."""
     return sorted(COURSES.keys())
 
 
 def get_levels():
-    """Return the fixed list of levels used in the data model."""
     return ["Level 1", "Level 2", "Level 3", "Level 4"]
 
 
 def safe_insert_text(text_widget, content):
-    """Helper to safely insert text into the read-only text widget."""
     text_widget.configure(state="normal")
     text_widget.insert(tk.END, content)
     text_widget.configure(state="disabled")
 
-    # Note: we temporarily switch the widget to normal so we can insert text,
-    # then immediately restore the 'disabled' state so users cannot edit the output.
-
-
 def on_get_recommendations(program_name, level_name, text_widget):
-    """Fetch courses for the selected program and level and display them with validation.
-
-    This function contains try/except to prevent crashes and uses messagebox to show
-    immediate alerts for missing input.
-    """
     try:
-        # clear previous output
         text_widget.configure(state="normal")
         text_widget.delete("1.0", tk.END)
         text_widget.configure(state="disabled")
 
-        # Input validation
         if not program_name:
             messagebox.showwarning("Input required", "Please select a program")
             return
@@ -74,9 +45,7 @@ def on_get_recommendations(program_name, level_name, text_widget):
             messagebox.showinfo("No courses", "No courses found for this combination")
             return
 
-        # level is a dict containing semesters; we'll list modules by semester
         for sem_name, modules in level.items():
-            # Show a heading for each semester (e.g. "Semester 1")
             safe_insert_text(text_widget, f"{sem_name}:\n")
             for mod in modules:
                 code = mod.get("code", "")
@@ -89,10 +58,8 @@ def on_get_recommendations(program_name, level_name, text_widget):
             safe_insert_text(text_widget, "\n")
 
     except Exception as e:
-        # Catch unexpected errors, show friendly message and write to console for debugging
         messagebox.showerror("Error", "An unexpected error occurred. Please check console for details.")
         print("Error in on_get_recommendations:", e, file=sys.stderr)
-
 
 def center_window(root, width=600, height=400):
     """Center the tkinter window on the screen."""
@@ -103,14 +70,9 @@ def center_window(root, width=600, height=400):
     y = (screen_height // 2) - (height // 2)
     root.geometry(f"{width}x{height}+{x}+{y}")
 
-    # Note: centering uses the screen size so the window appears in the middle
-    # on multi-monitor setups this centers on the primary monitor.
-
-
 def build_gui():
     root = tk.Tk()
     root.title("Course Recommender System")
-    # We'll center the window explicitly
     window_width = 600
     window_height = 400
     center_window(root, window_width, window_height)
@@ -161,9 +123,6 @@ def build_gui():
     txt_results.configure(yscrollcommand=scrollbar.set)
     txt_results.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
-
-    # The text area is intentionally read-only. If you need to enable editing for
-    # debugging, you can change the initial state to 'normal' here.
 
     # Button with styled appearance
     def on_enter(e):

@@ -1,32 +1,4 @@
-"""
-courses_data.py
 
-This module contains a nested dictionary structure that stores course
-information organized by academic program and level.
-
-Structure:
-{
-  "Program Name": {
-      "Level 1": [
-          {"code": "XXX101", "name": "Course Name", "credits": 3},
-          ...
-      ],
-      "Level 2": [...],
-      ...
-  },
-  ...
-}
-
-Example access:
-    from courses_data import COURSES
-    cs_level1 = COURSES["Computer Science"]["Level 1"]
-    for course in cs_level1:
-        print(course["code"], course["name"], course["credits"])
-
-Feel free to extend programs, levels or add more fields to each course.
-"""
-
-# Dictionary containing program metadata and detailed module listings
 COURSES = {
     "Computer Science": {
         "career_opportunities": (
